@@ -1,14 +1,12 @@
  private fun openCamera(type: String) {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(cameraIntent, 101)
-        imageType = if (type == "before") 1 else 2
     }
 
     private fun openGallery(type: String) {
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.type = "image/*"
         startActivityForResult(galleryIntent, 102)
-        imageType = if (type == "before") 3 else 4
     }
 
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -25,26 +23,11 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
                             imageUri
                         )
                         val imagePath = bitmap?.let { saveBitmapToFile(it) }
-                        if(imageType ==1){
-                            repository.insertBeforeImage(projectId, imagePath.toString())
-                            updateBeforeImagesAdapter()
-                        }
-                        else{
-                            repository.insertAfterImage(projectId, imagePath.toString())
-                            updateAfterImagesAdapter()
-                        }
                     }
                     102 -> {
                       //For Gallery
                         val selectedImageUri = data?.data
                         val imagePath = selectedImageUri?.let { saveImageToFile(it) }
-                        if(imageType==3){
-                            repository.insertBeforeImage(projectId, imagePath.toString())
-                            updateBeforeImagesAdapter()
-                        }else{
-                            repository.insertAfterImage(projectId, imagePath.toString())
-                            updateAfterImagesAdapter()
-                        }
                     }
                 }
         } 
